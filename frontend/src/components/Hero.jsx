@@ -9,7 +9,7 @@ const chips = [
   { icon: Clock, text: "Reparaciones en el día" },
   { icon: BadgeCheck, text: "Diagnóstico gratuito" },
 ];
-const marquee = ["iPhone", "iPad", "MacBook", "iMac", "Apple Watch", "AirPods", "Mac mini", "iPad Pro"];
+const marquee = ["iPhone", "Samsung Galaxy", "Xiaomi", "MacBook", "Portátiles", "Sobremesa", "Apple Watch", "Realme", "iPad", "Ratones gaming", "Motorola", "Honor"];
 
 export default function Hero() {
   const wa = waLink("Hola RevolTek, quiero información sobre una reparación.");
@@ -33,8 +33,8 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.08, ease }}
           >
-            Reparamos tu Apple <br />
-            <span className="grad-text">hoy mismo.</span>
+            Reparamos tu Apple, <br />
+            Samsung y <span className="grad-text">mucho más.</span>
           </motion.h1>
 
           <motion.p
@@ -43,8 +43,9 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.16, ease }}
           >
-            iPhone, iPad, Mac y Apple Watch. Pantalla, batería y mucho más con
-            precio cerrado antes de empezar. Calcula tu reparación en segundos.
+            iPhone, iPad, Mac y Apple Watch, Samsung y Android, además de
+            portátiles, ordenadores de sobremesa y ratones de marca. Precio
+            cerrado antes de empezar y diagnóstico gratuito.
           </motion.p>
 
           <motion.div

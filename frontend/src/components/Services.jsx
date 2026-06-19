@@ -1,8 +1,8 @@
-import { Smartphone, Tablet, Laptop, Watch, Check } from "lucide-react";
-import { DEVICES } from "../data/site";
+import { Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple, Check } from "lucide-react";
+import { CATALOG } from "../data/site";
 import Reveal from "./Reveal";
 
-const ICONS = { Smartphone, Tablet, Laptop, Watch };
+const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple };
 
 export default function Services() {
   return (
@@ -10,26 +10,27 @@ export default function Services() {
       <div className="container">
         <Reveal className="section-head">
           <div className="eyebrow">Qué reparamos</div>
-          <h2 className="display">Todo el ecosistema Apple, bajo un mismo techo</h2>
+          <h2 className="display">Reparamos todas tus marcas y dispositivos</h2>
           <p>
-            Especialistas exclusivamente en dispositivos Apple. Diagnóstico
-            gratuito y presupuesto cerrado para cada tipo de avería.
+            Apple, Samsung y Android, además de portátiles de cualquier marca,
+            ordenadores de sobremesa y ratones de marca. Diagnóstico gratuito y
+            presupuesto cerrado.
           </p>
         </Reveal>
 
         <div className="services-grid">
-          {DEVICES.map((d, i) => {
-            const Icon = ICONS[d.icon];
+          {CATALOG.map((c, i) => {
+            const Icon = ICONS[c.icon];
             return (
-              <Reveal key={d.id} delay={i * 0.08}>
-                <div className="panel service-card" data-testid={`service-${d.id}`}>
+              <Reveal key={c.id} delay={i * 0.06}>
+                <div className="panel service-card" data-testid={`service-${c.id}`}>
                   <div className="ico">
                     <Icon size={28} />
                   </div>
-                  <h3>{d.name}</h3>
-                  <p>{d.blurb}</p>
+                  <h3>{c.name}</h3>
+                  <p>{c.tagline}</p>
                   <ul className="service-list">
-                    {d.services.map((s) => (
+                    {c.highlights.map((s) => (
                       <li key={s}>
                         <Check size={15} /> {s}
                       </li>

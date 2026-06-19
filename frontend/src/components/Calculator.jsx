@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Smartphone, Tablet, Laptop, Watch, MessageCircle, Phone, Info } from "lucide-react";
-import { DEVICES, CONTACT, waLink } from "../data/site";
+import {
+  Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple,
+  MessageCircle, Phone, Info,
+} from "lucide-react";
+import { CATALOG, CONTACT, waLink } from "../data/site";
 import Reveal from "./Reveal";
 
-const ICONS = { Smartphone, Tablet, Laptop, Watch };
+const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple };
 
 function AnimatedPrice({ value }) {
   const [display, setDisplay] = useState(value);
@@ -31,63 +34,91 @@ function AnimatedPrice({ value }) {
 }
 
 export default function Calculator() {
+  const [catId, setCatId] = useState("apple");
   const [deviceId, setDeviceId] = useState("iphone");
+  const [brandId, setBrandId] = useState("xiaomi");
   const [modelIdx, setModelIdx] = useState(0);
+  const [serviceIdx, setServiceIdx] = useState(0);
   const [repair, setRepair] = useState("screen");
   const [quality, setQuality] = useState("original");
   const [screenType, setScreenType] = useState("oled");
 
-  const device = useMemo(() => DEVICES.find((d) => d.id === deviceId), [deviceId]);
-  const model = device.models[modelIdx];
-  const price = model[repair];
-  const repairLabel = device.labels[repair];
-  const isIphone = device.id === "iphone";
+  const cat = useMemo(() => CATALOG.find((c) => c.id === catId), [catId]);
+  const isServices = cat.kind === "services";
+  const hasSub = cat.kind === "phoneDevices" || cat.kind === "brands";
+
+  const device = cat.kind === "phoneDevices" ? cat.devices.find((d) => d.id === deviceId) || cat.devices[0] : null;
+  const brand = cat.kind === "brands" ? cat.brands.find((b) => b.id === brandId) || cat.brands[0] : null;
+
+  const models = device ? device.models : brand ? brand.models : cat.models || [];
+  const labels = device ? device.labels : cat.labels || { screen: "Pantalla", battery: "Batería" };
+  const isPhone = device ? device.phone : cat.phone || false;
+  const model = models[Math.min(modelIdx, models.length - 1)] || {};
+  const service = isServices ? cat.services[Math.min(serviceIdx, cat.services.length - 1)] : null;
+
+  const price = isServices ? service.price : model[repair];
+  const repairLabel = isServices ? service.name : labels[repair];
 
   useEffect(() => {
     setQuality("original");
-  }, [deviceId, modelIdx, repair]);
+  }, [catId, deviceId, brandId, modelIdx, repair]);
+
+  const onCategory = (id) => {
+    setCatId(id);
+    setDeviceId("iphone");
+    setBrandId("xiaomi");
+    setModelIdx(0);
+    setServiceIdx(0);
+    setRepair("screen");
+    setQuality("original");
+  };
+  const onDevice = (id) => { setDeviceId(id); setModelIdx(0); setRepair("screen"); };
+  const onBrand = (id) => { setBrandId(id); setModelIdx(0); setRepair("screen"); };
 
   const qualityOpts = [
     { id: "original", label: "Original" },
     { id: "compatible", label: "Compatible" },
   ];
-  if (repair === "battery" && isIphone && model.olderBattery) {
+  if (repair === "battery" && model.olderBattery) {
     qualityOpts.push({
       id: "capacidad",
       label: "Mayor capacidad",
       info: "Consulte a nuestros técnicos para más información sobre la capacidad de la batería.",
     });
   }
-  const showScreenTypes = repair === "screen" && quality === "compatible" && isIphone;
+  const showScreenTypes = !isServices && repair === "screen" && quality === "compatible" && isPhone;
 
   const pieceLabel = (() => {
+    if (isServices) return service.name;
     if (repair === "battery") {
       if (quality === "capacidad") return "Batería de mayor capacidad";
       return quality === "original" ? "Batería original" : "Batería compatible";
     }
     if (quality === "original") return "Pantalla original";
-    if (isIphone) return `Pantalla compatible · ${screenType === "oled" ? "OLED-OEM" : "Incell"}`;
+    if (isPhone) return `Pantalla compatible · ${screenType === "oled" ? "OLED-OEM" : "Incell"}`;
     return "Pantalla compatible";
   })();
 
-  const onDevice = (id) => {
-    setDeviceId(id);
-    setModelIdx(0);
-    setRepair("screen");
-  };
+  const stepModel = hasSub ? 3 : 2;
+  const stepRepair = hasSub ? 4 : 3;
+  const stepQuality = hasSub ? 5 : 4;
 
-  const message = `Hola RevolTek, quiero presupuesto para un *${model.name}* — *${pieceLabel}*${
-    price > 0 ? ` (precio web: ${price}€)` : ""
-  }. ¿Me confirmáis disponibilidad?`;
+  const message = isServices
+    ? `Hola RevolTek, quiero presupuesto para *${cat.name}* — *${service.name}* (desde ${price}€). ¿Me confirmáis disponibilidad?`
+    : `Hola RevolTek, quiero presupuesto para un *${cat.name} ${model.name}* — *${pieceLabel}*${
+        price > 0 ? ` (precio web: ${price}€)` : ""
+      }. ¿Me confirmáis disponibilidad?`;
+
+  const CatIcon = ICONS[cat.icon];
 
   return (
     <section className="section" id="precios">
       <div className="container">
         <Reveal className="section-head">
           <div className="eyebrow">Calculadora de precios</div>
-          <h2 className="display">Tu presupuesto en 3 toques</h2>
+          <h2 className="display">Tu presupuesto al instante</h2>
           <p>
-            Elige dispositivo, modelo y tipo de reparación. Precios de ejemplo
+            Elige la categoría, el dispositivo y la reparación. Precios de ejemplo
             orientativos: el precio final se confirma en el diagnóstico gratuito.
           </p>
         </Reveal>
@@ -97,122 +128,192 @@ export default function Calculator() {
           <Reveal>
             <div className="panel calc-config" data-testid="calculator">
               <p className="calc-step-label">
-                <span>1</span> Elige tu dispositivo
+                <span>1</span> ¿Qué quieres reparar?
               </p>
-              <div className="device-tabs">
-                {DEVICES.map((d) => {
-                  const Icon = ICONS[d.icon];
+              <div className="device-tabs cat-tabs">
+                {CATALOG.map((c) => {
+                  const Icon = ICONS[c.icon];
                   return (
                     <button
-                      key={d.id}
-                      className={`device-tab ${deviceId === d.id ? "active" : ""}`}
-                      onClick={() => onDevice(d.id)}
-                      data-testid={`device-tab-${d.id}`}
+                      key={c.id}
+                      className={`device-tab ${catId === c.id ? "active" : ""}`}
+                      onClick={() => onCategory(c.id)}
+                      data-testid={`cat-${c.id}`}
                     >
                       <Icon size={22} />
-                      {d.name}
+                      {c.name}
                     </button>
                   );
                 })}
               </div>
 
-              <p className="calc-step-label">
-                <span>2</span> Selecciona el modelo
-              </p>
-              <div className="model-grid">
-                {device.models.map((m, i) => (
-                  <button
-                    key={m.name}
-                    className={`model-chip ${modelIdx === i ? "active" : ""}`}
-                    onClick={() => setModelIdx(i)}
-                    data-testid={`model-${i}`}
-                  >
-                    {m.name}
-                  </button>
-                ))}
-              </div>
-
-              <p className="calc-step-label">
-                <span>3</span> Tipo de reparación
-              </p>
-              <div className="repair-toggle">
-                {["screen", "battery"].map((r) => (
-                  <button
-                    key={r}
-                    className={`repair-opt ${repair === r ? "active" : ""}`}
-                    onClick={() => setRepair(r)}
-                    data-testid={`repair-${r}`}
-                  >
-                    <span>{device.labels[r]}</span>
-                    <span className="dot" />
-                  </button>
-                ))}
-              </div>
-
-              <p className="calc-step-label">
-                <span>4</span> Calidad de la pieza
-              </p>
-              <div className="quality-grid">
-                {qualityOpts.map((o) => (
-                  <button
-                    key={o.id}
-                    className={`repair-opt quality-opt ${quality === o.id ? "active" : ""}`}
-                    onClick={() => setQuality(o.id)}
-                    data-testid={`quality-${o.id}`}
-                  >
-                    <span className="qlabel">
-                      {o.label}
-                      {o.info && (
-                        <span
-                          className="info-tip"
-                          onClick={(e) => e.stopPropagation()}
-                          data-testid="battery-info"
-                        >
-                          <Info size={15} />
-                          <span className="info-bubble">{o.info}</span>
+              {isServices ? (
+                <>
+                  {cat.note && <p className="cat-note">{cat.note}</p>}
+                  <p className="calc-step-label">
+                    <span>2</span> Elige el servicio
+                  </p>
+                  <div className="svc-list">
+                    {cat.services.map((s, i) => (
+                      <button
+                        key={s.name}
+                        className={`svc-opt ${serviceIdx === i ? "active" : ""}`}
+                        onClick={() => setServiceIdx(i)}
+                        data-testid={`service-opt-${i}`}
+                      >
+                        <span>{s.name}</span>
+                        <span className="svc-price">
+                          <small>desde</small> {s.price}€
                         </span>
-                      )}
-                    </span>
-                    <span className="dot" />
-                  </button>
-                ))}
-              </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {cat.kind === "phoneDevices" && (
+                    <>
+                      <p className="calc-step-label">
+                        <span>2</span> Tipo de dispositivo
+                      </p>
+                      <div className="device-tabs">
+                        {cat.devices.map((d) => {
+                          const Icon = ICONS[d.icon];
+                          return (
+                            <button
+                              key={d.id}
+                              className={`device-tab ${deviceId === d.id ? "active" : ""}`}
+                              onClick={() => onDevice(d.id)}
+                              data-testid={`device-tab-${d.id}`}
+                            >
+                              <Icon size={22} />
+                              {d.name}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
 
-              <AnimatePresence initial={false}>
-                {showScreenTypes && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ overflow: "hidden" }}
-                  >
-                    <p className="calc-substep">Tipo de pantalla compatible</p>
-                    <div className="quality-grid">
+                  {cat.kind === "brands" && (
+                    <>
+                      <p className="calc-step-label">
+                        <span>2</span> Marca
+                      </p>
+                      <div className="brand-tabs">
+                        {cat.brands.map((b) => (
+                          <button
+                            key={b.id}
+                            className={`brand-tab ${brandId === b.id ? "active" : ""}`}
+                            onClick={() => onBrand(b.id)}
+                            data-testid={`brand-${b.id}`}
+                          >
+                            {b.name}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  <p className="calc-step-label">
+                    <span>{stepModel}</span> Selecciona el modelo
+                  </p>
+                  <div className="model-grid">
+                    {models.map((m, i) => (
                       <button
-                        className={`repair-opt quality-opt ${screenType === "oled" ? "active" : ""}`}
-                        onClick={() => setScreenType("oled")}
-                        data-testid="screen-oled"
+                        key={m.name}
+                        className={`model-chip ${modelIdx === i ? "active" : ""}`}
+                        onClick={() => setModelIdx(i)}
+                        data-testid={`model-${i}`}
                       >
-                        <span className="qlabel">Igual a la original · OLED-OEM</span>
+                        {m.name}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p className="calc-step-label">
+                    <span>{stepRepair}</span> Tipo de reparación
+                  </p>
+                  <div className="repair-toggle">
+                    {["screen", "battery"].map((r) => (
+                      <button
+                        key={r}
+                        className={`repair-opt ${repair === r ? "active" : ""}`}
+                        onClick={() => setRepair(r)}
+                        data-testid={`repair-${r}`}
+                      >
+                        <span>{labels[r]}</span>
                         <span className="dot" />
                       </button>
+                    ))}
+                  </div>
+
+                  <p className="calc-step-label">
+                    <span>{stepQuality}</span> Calidad de la pieza
+                  </p>
+                  <div className="quality-grid">
+                    {qualityOpts.map((o) => (
                       <button
-                        className={`repair-opt quality-opt ${screenType === "incell" ? "active" : ""}`}
-                        onClick={() => setScreenType("incell")}
-                        data-testid="screen-incell"
+                        key={o.id}
+                        className={`repair-opt quality-opt ${quality === o.id ? "active" : ""}`}
+                        onClick={() => setQuality(o.id)}
+                        data-testid={`quality-${o.id}`}
                       >
-                        <span className="qlabel">Baja calidad · Incell</span>
+                        <span className="qlabel">
+                          {o.label}
+                          {o.info && (
+                            <span
+                              className="info-tip"
+                              onClick={(e) => e.stopPropagation()}
+                              data-testid="battery-info"
+                            >
+                              <Info size={15} />
+                              <span className="info-bubble">{o.info}</span>
+                            </span>
+                          )}
+                        </span>
                         <span className="dot" />
                       </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    ))}
+                  </div>
+
+                  <AnimatePresence initial={false}>
+                    {showScreenTypes && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        <p className="calc-substep">Tipo de pantalla compatible</p>
+                        <div className="quality-grid">
+                          <button
+                            className={`repair-opt quality-opt ${screenType === "oled" ? "active" : ""}`}
+                            onClick={() => setScreenType("oled")}
+                            data-testid="screen-oled"
+                          >
+                            <span className="qlabel">Igual a la original · OLED-OEM</span>
+                            <span className="dot" />
+                          </button>
+                          <button
+                            className={`repair-opt quality-opt ${screenType === "incell" ? "active" : ""}`}
+                            onClick={() => setScreenType("incell")}
+                            data-testid="screen-incell"
+                          >
+                            <span className="qlabel">Baja calidad · Incell</span>
+                            <span className="dot" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
+              )}
             </div>
           </Reveal>
 
-          {/* Ticket de diagnóstico */}
+          {/* Ficha de diagnóstico */}
           <Reveal delay={0.1}>
             <div className="panel ticket" data-testid="ticket">
               <div className="scanline" />
@@ -227,42 +328,73 @@ export default function Calculator() {
 
               <div className="ticket-body">
                 <div className="ticket-row">
-                  <span>Dispositivo</span>
-                  <span>{device.name}</span>
+                  <span>Categoría</span>
+                  <span>{cat.name}</span>
                 </div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={model.name}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className="ticket-row"
-                  >
-                    <span>Modelo</span>
-                    <span>{model.name}</span>
-                  </motion.div>
-                </AnimatePresence>
-                <div className="ticket-row">
-                  <span>Reparación</span>
-                  <span>{repairLabel}</span>
-                </div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={pieceLabel}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className="ticket-row"
-                  >
-                    <span>Pieza</span>
-                    <span>{pieceLabel}</span>
-                  </motion.div>
-                </AnimatePresence>
+
+                {isServices ? (
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={service.name}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25 }}
+                      className="ticket-row"
+                    >
+                      <span>Servicio</span>
+                      <span>{service.name}</span>
+                    </motion.div>
+                  </AnimatePresence>
+                ) : (
+                  <>
+                    {device && (
+                      <div className="ticket-row">
+                        <span>Dispositivo</span>
+                        <span>{device.name}</span>
+                      </div>
+                    )}
+                    {brand && (
+                      <div className="ticket-row">
+                        <span>Marca</span>
+                        <span>{brand.name}</span>
+                      </div>
+                    )}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={model.name}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
+                        className="ticket-row"
+                      >
+                        <span>Modelo</span>
+                        <span>{model.name}</span>
+                      </motion.div>
+                    </AnimatePresence>
+                    <div className="ticket-row">
+                      <span>Reparación</span>
+                      <span>{labels[repair]}</span>
+                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={pieceLabel}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
+                        className="ticket-row"
+                      >
+                        <span>Pieza</span>
+                        <span>{pieceLabel}</span>
+                      </motion.div>
+                    </AnimatePresence>
+                  </>
+                )}
 
                 <div className="price-box">
-                  <div className="label">Precio estimado</div>
+                  <div className="label">{isServices ? "Precio desde" : "Precio estimado"}</div>
                   {price > 0 ? (
                     <div className="amount grad-text" data-testid="price-amount">
                       <AnimatedPrice value={price} />€

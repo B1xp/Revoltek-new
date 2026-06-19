@@ -6,7 +6,7 @@
 export const CONTACT = {
   brand: "RevolTek",
   brandFull: "RevolTek Reparaciones",
-  tagline: "Especialistas en Apple",
+  tagline: "Reparación multimarca",
   // --- TELÉFONO PARA LLAMADA DIRECTA (edítalo) ---
   phoneDisplay: "+34 633 58 79 24",
   phoneRaw: "+34633587924",
@@ -22,75 +22,249 @@ export const waLink = (msg) =>
   `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(msg)}`;
 
 // ============================================================
-//  PRECIOS DE EJEMPLO — edita libremente (en €)
+//  CATÁLOGO Y PRECIOS DE EJEMPLO — edita libremente (en €)
 //  screen = pantalla/cristal · battery = batería
-//  Pon 0 si no aplica (se mostrará "Consultar").
+//  Precios orientativos basados en tarifas de mercado en España.
+//  kind: "phoneDevices" | "models" | "brands" | "services"
 // ============================================================
 
-export const DEVICES = [
+export const CATALOG = [
+  // ---------- APPLE ----------
   {
-    id: "iphone",
-    name: "iPhone",
+    id: "apple",
+    name: "Apple",
+    icon: "Apple",
+    kind: "phoneDevices",
+    tagline: "Especialistas en todo el ecosistema Apple.",
+    highlights: ["iPhone · iPad", "Mac · Apple Watch", "Pantalla y batería", "Daños por líquidos"],
+    devices: [
+      {
+        id: "iphone",
+        name: "iPhone",
+        icon: "Smartphone",
+        phone: true,
+        labels: { screen: "Pantalla", battery: "Batería" },
+        models: [
+          { name: "iPhone 16 Pro Max", screen: 320, battery: 90 },
+          { name: "iPhone 16 Pro", screen: 290, battery: 85 },
+          { name: "iPhone 16", screen: 220, battery: 75 },
+          { name: "iPhone 15 Pro Max", screen: 280, battery: 80 },
+          { name: "iPhone 15", screen: 200, battery: 70 },
+          { name: "iPhone 14 Pro", screen: 230, battery: 70 },
+          { name: "iPhone 14", screen: 170, battery: 65 },
+          { name: "iPhone 13", screen: 150, battery: 60 },
+          { name: "iPhone 12", screen: 130, battery: 55, olderBattery: true },
+          { name: "iPhone 11", screen: 110, battery: 50, olderBattery: true },
+          { name: "iPhone SE", screen: 90, battery: 45, olderBattery: true },
+        ],
+      },
+      {
+        id: "ipad",
+        name: "iPad",
+        icon: "Tablet",
+        phone: false,
+        labels: { screen: "Cristal / Táctil", battery: "Batería" },
+        models: [
+          { name: 'iPad Pro 12.9"', screen: 280, battery: 110 },
+          { name: 'iPad Pro 11"', screen: 250, battery: 100 },
+          { name: "iPad Air", screen: 190, battery: 90 },
+          { name: "iPad (10ª gen)", screen: 150, battery: 80 },
+          { name: "iPad mini", screen: 170, battery: 85 },
+        ],
+      },
+      {
+        id: "mac",
+        name: "Mac",
+        icon: "Laptop",
+        phone: false,
+        labels: { screen: "Pantalla", battery: "Batería" },
+        models: [
+          { name: 'MacBook Pro 16"', screen: 480, battery: 160 },
+          { name: 'MacBook Pro 14"', screen: 420, battery: 150 },
+          { name: 'MacBook Pro 13"', screen: 350, battery: 140 },
+          { name: "MacBook Air M2 / M3", screen: 320, battery: 130 },
+          { name: "iMac", screen: 390, battery: 0 },
+        ],
+      },
+      {
+        id: "watch",
+        name: "Apple Watch",
+        icon: "Watch",
+        phone: false,
+        labels: { screen: "Cristal / Pantalla", battery: "Batería" },
+        models: [
+          { name: "Apple Watch Ultra 2", screen: 160, battery: 80 },
+          { name: "Apple Watch Series 10", screen: 130, battery: 70 },
+          { name: "Apple Watch Series 9", screen: 120, battery: 65 },
+          { name: "Apple Watch SE", screen: 95, battery: 55 },
+        ],
+      },
+    ],
+  },
+
+  // ---------- SAMSUNG ----------
+  {
+    id: "samsung",
+    name: "Samsung",
     icon: "Smartphone",
+    kind: "models",
+    phone: true,
     labels: { screen: "Pantalla", battery: "Batería" },
-    blurb: "Cambio de pantalla, batería, cámara y daños por líquidos.",
-    services: ["Cambio de pantalla", "Sustitución de batería", "Reparación de cámara", "Daño por líquidos"],
+    tagline: "Galaxy reparados con piezas de calidad.",
+    highlights: ["Galaxy S · A · Z", "Pantalla AMOLED", "Batería", "Puerto de carga"],
     models: [
-      { name: "iPhone 16 Pro Max", screen: 320, battery: 90 },
-      { name: "iPhone 16 Pro", screen: 290, battery: 85 },
-      { name: "iPhone 16", screen: 220, battery: 75 },
-      { name: "iPhone 15 Pro Max", screen: 280, battery: 80 },
-      { name: "iPhone 15", screen: 200, battery: 70 },
-      { name: "iPhone 14 Pro", screen: 230, battery: 70 },
-      { name: "iPhone 14", screen: 170, battery: 65 },
-      { name: "iPhone 13", screen: 150, battery: 60 },
-      { name: "iPhone 12", screen: 130, battery: 55, olderBattery: true },
-      { name: "iPhone 11", screen: 110, battery: 50, olderBattery: true },
-      { name: "iPhone SE", screen: 90, battery: 45, olderBattery: true },
+      { name: "Galaxy S24 Ultra", screen: 230, battery: 75 },
+      { name: "Galaxy S24 / S23", screen: 180, battery: 70 },
+      { name: "Galaxy S22 / S21", screen: 150, battery: 65 },
+      { name: "Galaxy S20 / S10", screen: 120, battery: 60 },
+      { name: "Galaxy Z Flip / Fold", screen: 320, battery: 90 },
+      { name: "Galaxy A55 / A54", screen: 95, battery: 60 },
+      { name: "Galaxy A35 / A34", screen: 85, battery: 55 },
+      { name: "Galaxy A15 / A14", screen: 60, battery: 45 },
+      { name: "Galaxy A05 / A04", screen: 50, battery: 40 },
     ],
   },
+
+  // ---------- OTRA MARCA ANDROID ----------
   {
-    id: "ipad",
-    name: "iPad",
-    icon: "Tablet",
-    labels: { screen: "Cristal / Táctil", battery: "Batería" },
-    blurb: "Cristal y táctil, batería, puerto de carga y botones.",
-    services: ["Cristal y táctil", "Batería", "Puerto de carga", "Botones físicos"],
-    models: [
-      { name: 'iPad Pro 12.9"', screen: 280, battery: 110 },
-      { name: 'iPad Pro 11"', screen: 250, battery: 100 },
-      { name: "iPad Air", screen: 190, battery: 90 },
-      { name: "iPad (10ª gen)", screen: 150, battery: 80 },
-      { name: "iPad mini", screen: 170, battery: 85 },
+    id: "android",
+    name: "Otra marca Android",
+    icon: "Smartphone",
+    kind: "brands",
+    phone: true,
+    labels: { screen: "Pantalla", battery: "Batería" },
+    tagline: "Reparamos las marcas Android más populares.",
+    highlights: ["Xiaomi · Redmi · POCO", "Realme · Oppo · Motorola", "Honor · OnePlus · Pixel", "Pantalla y batería"],
+    brands: [
+      {
+        id: "xiaomi",
+        name: "Xiaomi / Redmi / POCO",
+        models: [
+          { name: "Xiaomi 14 / 13", screen: 130, battery: 60 },
+          { name: "Redmi Note 14/13 Pro", screen: 75, battery: 50 },
+          { name: "Redmi Note 14 / 13", screen: 60, battery: 45 },
+          { name: "POCO X7 / X6", screen: 65, battery: 48 },
+          { name: "Redmi 13C / A3", screen: 50, battery: 40 },
+        ],
+      },
+      {
+        id: "realme",
+        name: "Realme",
+        models: [
+          { name: "Realme GT 6 / 5", screen: 110, battery: 60 },
+          { name: "Realme 12 / 11", screen: 70, battery: 50 },
+          { name: "Realme C67 / C55", screen: 55, battery: 42 },
+        ],
+      },
+      {
+        id: "oppo",
+        name: "Oppo",
+        models: [
+          { name: "Oppo Find X", screen: 160, battery: 70 },
+          { name: "Oppo Reno 12 / 11", screen: 120, battery: 60 },
+          { name: "Oppo A98 / A78", screen: 70, battery: 48 },
+        ],
+      },
+      {
+        id: "motorola",
+        name: "Motorola",
+        models: [
+          { name: "Moto Edge 50", screen: 110, battery: 60 },
+          { name: "Moto G84 / G54", screen: 70, battery: 48 },
+          { name: "Moto E14 / G play", screen: 55, battery: 42 },
+        ],
+      },
+      {
+        id: "honor",
+        name: "Honor",
+        models: [
+          { name: "Honor Magic 6", screen: 150, battery: 65 },
+          { name: "Honor 90 / 70", screen: 90, battery: 55 },
+          { name: "Honor X8 / X6", screen: 60, battery: 45 },
+        ],
+      },
+      {
+        id: "oneplus",
+        name: "OnePlus",
+        models: [
+          { name: "OnePlus 12 / 11", screen: 150, battery: 65 },
+          { name: "OnePlus Nord 4 / 3", screen: 90, battery: 55 },
+        ],
+      },
+      {
+        id: "pixel",
+        name: "Google Pixel",
+        models: [
+          { name: "Pixel 9 / 8 Pro", screen: 170, battery: 70 },
+          { name: "Pixel 8 / 7", screen: 140, battery: 65 },
+          { name: "Pixel 8a / 7a", screen: 110, battery: 60 },
+        ],
+      },
     ],
   },
+
+  // ---------- PORTÁTILES ----------
   {
-    id: "mac",
-    name: "Mac",
+    id: "laptops",
+    name: "Portátiles",
     icon: "Laptop",
-    labels: { screen: "Pantalla", battery: "Batería" },
-    blurb: "Teclado, pantalla, ampliación SSD/RAM y diagnóstico lógico.",
-    services: ["Teclado y trackpad", "Pantalla", "Ampliación SSD / RAM", "Diagnóstico lógico"],
-    models: [
-      { name: 'MacBook Pro 16"', screen: 480, battery: 160 },
-      { name: 'MacBook Pro 14"', screen: 420, battery: 150 },
-      { name: 'MacBook Pro 13"', screen: 350, battery: 140 },
-      { name: "MacBook Air M2 / M3", screen: 320, battery: 130 },
-      { name: "iMac", screen: 390, battery: 0 },
+    kind: "services",
+    note: "Todas las marcas: HP, Lenovo, Asus, Acer, Dell, MSI, Huawei, MacBook y más.",
+    tagline: "Portátiles de cualquier marca.",
+    highlights: ["Todas las marcas", "Pantalla y teclado", "SSD · RAM · batería", "Formateo y virus"],
+    services: [
+      { name: "Cambio de pantalla", price: 120 },
+      { name: "Cambio de batería", price: 49 },
+      { name: "Cambio de teclado", price: 69 },
+      { name: "Instalación / ampliación SSD", price: 45 },
+      { name: "Ampliación de RAM", price: 35 },
+      { name: "Formateo + reinstalación SO", price: 49 },
+      { name: "Eliminación de virus", price: 39 },
+      { name: "Limpieza interna + pasta térmica", price: 35 },
+      { name: "Reparación puerto de carga", price: 60 },
+      { name: "Reparación de placa base", price: 120 },
+      { name: "Recuperación de datos", price: 60 },
     ],
   },
+
+  // ---------- ORDENADORES DE SOBREMESA ----------
   {
-    id: "watch",
-    name: "Apple Watch",
-    icon: "Watch",
-    labels: { screen: "Cristal / Pantalla", battery: "Batería" },
-    blurb: "Cristal/pantalla, batería, corona digital y carcasa.",
-    services: ["Cristal / pantalla", "Batería", "Corona digital", "Correas y carcasa"],
-    models: [
-      { name: "Apple Watch Ultra 2", screen: 160, battery: 80 },
-      { name: "Apple Watch Series 10", screen: 130, battery: 70 },
-      { name: "Apple Watch Series 9", screen: 120, battery: 65 },
-      { name: "Apple Watch SE", screen: 95, battery: 55 },
+    id: "desktops",
+    name: "Ordenadores sobremesa",
+    icon: "Monitor",
+    kind: "services",
+    note: "Sobremesa de cualquier marca o equipos montados a medida.",
+    tagline: "Tu sobremesa como el primer día.",
+    highlights: ["Sobremesa y a medida", "SSD · RAM · fuente", "Formateo y limpieza", "Diagnóstico hardware"],
+    services: [
+      { name: "Montaje de PC a medida", price: 49 },
+      { name: "Instalación SSD / disco duro", price: 35 },
+      { name: "Ampliación de RAM", price: 30 },
+      { name: "Cambio fuente de alimentación", price: 45 },
+      { name: "Formateo + reinstalación SO", price: 45 },
+      { name: "Eliminación de virus", price: 39 },
+      { name: "Limpieza interna + mantenimiento", price: 30 },
+      { name: "Reparación de placa base", price: 90 },
+      { name: "Diagnóstico de hardware", price: 20 },
+      { name: "Recuperación de datos", price: 60 },
+    ],
+  },
+
+  // ---------- RATONES DE MARCA ----------
+  {
+    id: "mice",
+    name: "Ratones de marca",
+    icon: "Mouse",
+    kind: "services",
+    note: "Logitech, Razer, SteelSeries, Corsair, Glorious y más.",
+    tagline: "Adiós al doble clic y al desgaste.",
+    highlights: ["Logitech · Razer...", "Doble clic / switch", "Rueda / encoder", "Cable y conector"],
+    services: [
+      { name: "Cambio de switch (doble clic)", price: 25 },
+      { name: "Reparación rueda / encoder", price: 25 },
+      { name: "Cambio de cable / conector USB", price: 20 },
+      { name: "Limpieza y mantenimiento", price: 15 },
+      { name: "Cambio de patas / skates", price: 12 },
     ],
   },
 ];
@@ -120,8 +294,8 @@ export const WHY = [
   },
   {
     icon: "Award",
-    title: "Técnicos certificados",
-    text: "Especialistas formados exclusivamente en el ecosistema Apple y recambios de calidad.",
+    title: "Multimarca",
+    text: "Apple, Samsung y Android, además de portátiles, sobremesa y ratones de marca.",
   },
 ];
 
@@ -134,25 +308,25 @@ export const REVIEWS = [
   },
   {
     name: "Marcos Ruiz",
-    device: 'MacBook Pro 14"',
+    device: "Portátil HP",
     rating: 5,
-    text: "Pensaba que mi MacBook era irrecuperable tras un derrame de café. Lo dejaron como nuevo y me explicaron todo el proceso. Muy profesionales.",
+    text: "Le pusieron un SSD y le hicieron formateo al portátil y va volando. Me explicaron todo el proceso. Muy profesionales.",
   },
   {
     name: "Andrea Gómez",
-    device: "Apple Watch Series 9",
+    device: "Xiaomi Redmi Note 13",
     rating: 5,
-    text: "Cristal roto sustituido el mismo día. Me avisaron por WhatsApp en cuanto estuvo listo. Repetiré sin duda.",
+    text: "Pantalla rota sustituida el mismo día y a muy buen precio. Me avisaron por WhatsApp en cuanto estuvo listo. Repetiré sin duda.",
   },
   {
     name: "David Martín",
-    device: "iPad Air",
+    device: "Ratón Logitech",
     rating: 5,
-    text: "Presupuesto cerrado desde el principio y cumplieron al céntimo. Se nota que saben lo que hacen con productos Apple.",
+    text: "Tenía doble clic en mi ratón gaming y me lo dejaron como nuevo por mucho menos de lo que costaba uno nuevo. Genial.",
   },
   {
     name: "Nerea Castro",
-    device: "iPhone 13",
+    device: "Samsung Galaxy S22",
     rating: 5,
     text: "Batería nueva y el móvil aguanta todo el día otra vez. Atención de 10 y garantía por escrito. Totalmente recomendable.",
   },
@@ -160,8 +334,12 @@ export const REVIEWS = [
 
 export const FAQS = [
   {
+    q: "¿Qué dispositivos y marcas reparáis?",
+    a: "Reparamos Apple (iPhone, iPad, Mac y Apple Watch), Samsung Galaxy y otras marcas Android (Xiaomi, Redmi, POCO, Realme, Oppo, Motorola, Honor, OnePlus y Google Pixel). Además reparamos portátiles de todas las marcas, ordenadores de sobremesa y ratones de marca.",
+  },
+  {
     q: "¿Cuánto tarda una reparación?",
-    a: "La mayoría de reparaciones de pantalla o batería se entregan el mismo día, normalmente en menos de 24 horas. Para casos más complejos (placa lógica, daños por líquidos) te damos un plazo concreto tras el diagnóstico.",
+    a: "La mayoría de reparaciones de pantalla o batería se entregan el mismo día, normalmente en menos de 24 horas. Para casos más complejos (placa lógica, daños por líquidos, recuperación de datos) te damos un plazo concreto tras el diagnóstico.",
   },
   {
     q: "¿El diagnóstico tiene coste?",
@@ -173,14 +351,10 @@ export const FAQS = [
   },
   {
     q: "¿Usáis recambios originales?",
-    a: "Trabajamos con recambios de máxima calidad. Te informamos siempre del tipo de pieza utilizada para que elijas la opción que mejor se ajuste a ti.",
+    a: "Trabajamos con recambios de máxima calidad y, según el modelo, puedes elegir entre pieza original o compatible. Te informamos siempre del tipo de pieza utilizada.",
   },
   {
     q: "¿Los precios de la web son definitivos?",
     a: "Son precios orientativos de ejemplo. El precio final se confirma tras el diagnóstico gratuito, pero te garantizamos un presupuesto cerrado antes de tocar tu dispositivo.",
-  },
-  {
-    q: "¿Reparáis todos los dispositivos Apple?",
-    a: "Sí: iPhone, iPad, Mac y Apple Watch. Si tienes dudas sobre tu modelo concreto, escríbenos por WhatsApp y te lo confirmamos al momento.",
   },
 ];
