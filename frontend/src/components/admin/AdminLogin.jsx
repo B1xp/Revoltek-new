@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { LogIn, Lock, User, ArrowLeft } from "lucide-react";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = "https://revoltek-new.onrender.com/api";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -16,13 +16,19 @@ export default function AdminLogin() {
     e.preventDefault();
     setError("");
     setLoading(true);
+    
     try {
       const { data } = await axios.post(`${API}/auth/login`, { username, password });
       localStorage.setItem("rvtk_token", data.token);
       navigate("/admin");
     } catch (err) {
-      const d = err.response?.data?.detail;
-      setError(typeof d === "string" ? d : "No se pudo iniciar sesión");
+      // Si el backend responde que la IP está bloqueada (Código 403)
+      if (err.response?.status === 403) {
+        setError("Acceso denegado. Esta dirección IP ha sido bloqueada tras demasiados intentos fallidos.");
+      } else {
+        // Aviso genérico para credenciales incorrectas o fallos del servidor
+        setError("Usuario o contraseña incorrectos.");
+      }
     } finally {
       setLoading(false);
     }
