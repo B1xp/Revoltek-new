@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Smartphone, Tablet, Laptop, Watch, MessageCircle, Phone } from "lucide-react";
+import { Smartphone, Tablet, Laptop, Watch, MessageCircle, Phone, Info } from "lucide-react";
 import { DEVICES, CONTACT, waLink } from "../data/site";
 import Reveal from "./Reveal";
 
@@ -34,11 +34,41 @@ export default function Calculator() {
   const [deviceId, setDeviceId] = useState("iphone");
   const [modelIdx, setModelIdx] = useState(0);
   const [repair, setRepair] = useState("screen");
+  const [quality, setQuality] = useState("original");
+  const [screenType, setScreenType] = useState("oled");
 
   const device = useMemo(() => DEVICES.find((d) => d.id === deviceId), [deviceId]);
   const model = device.models[modelIdx];
   const price = model[repair];
   const repairLabel = device.labels[repair];
+  const isIphone = device.id === "iphone";
+
+  useEffect(() => {
+    setQuality("original");
+  }, [deviceId, modelIdx, repair]);
+
+  const qualityOpts = [
+    { id: "original", label: "Original" },
+    { id: "compatible", label: "Compatible" },
+  ];
+  if (repair === "battery" && isIphone && model.olderBattery) {
+    qualityOpts.push({
+      id: "capacidad",
+      label: "Mayor capacidad",
+      info: "Consulte a nuestros técnicos para más información sobre la capacidad de la batería.",
+    });
+  }
+  const showScreenTypes = repair === "screen" && quality === "compatible" && isIphone;
+
+  const pieceLabel = (() => {
+    if (repair === "battery") {
+      if (quality === "capacidad") return "Batería de mayor capacidad";
+      return quality === "original" ? "Batería original" : "Batería compatible";
+    }
+    if (quality === "original") return "Pantalla original";
+    if (isIphone) return `Pantalla compatible · ${screenType === "oled" ? "OLED-OEM" : "Incell"}`;
+    return "Pantalla compatible";
+  })();
 
   const onDevice = (id) => {
     setDeviceId(id);
@@ -46,7 +76,7 @@ export default function Calculator() {
     setRepair("screen");
   };
 
-  const message = `Hola RevolTek, quiero presupuesto para un *${model.name}* — *${repairLabel}*${
+  const message = `Hola RevolTek, quiero presupuesto para un *${model.name}* — *${pieceLabel}*${
     price > 0 ? ` (precio web: ${price}€)` : ""
   }. ¿Me confirmáis disponibilidad?`;
 
@@ -118,6 +148,67 @@ export default function Calculator() {
                   </button>
                 ))}
               </div>
+
+              <p className="calc-step-label">
+                <span>4</span> Calidad de la pieza
+              </p>
+              <div className="quality-grid">
+                {qualityOpts.map((o) => (
+                  <button
+                    key={o.id}
+                    className={`repair-opt quality-opt ${quality === o.id ? "active" : ""}`}
+                    onClick={() => setQuality(o.id)}
+                    data-testid={`quality-${o.id}`}
+                  >
+                    <span className="qlabel">
+                      {o.label}
+                      {o.info && (
+                        <span
+                          className="info-tip"
+                          onClick={(e) => e.stopPropagation()}
+                          data-testid="battery-info"
+                        >
+                          <Info size={15} />
+                          <span className="info-bubble">{o.info}</span>
+                        </span>
+                      )}
+                    </span>
+                    <span className="dot" />
+                  </button>
+                ))}
+              </div>
+
+              <AnimatePresence initial={false}>
+                {showScreenTypes && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <p className="calc-substep">Tipo de pantalla compatible</p>
+                    <div className="quality-grid">
+                      <button
+                        className={`repair-opt quality-opt ${screenType === "oled" ? "active" : ""}`}
+                        onClick={() => setScreenType("oled")}
+                        data-testid="screen-oled"
+                      >
+                        <span className="qlabel">Igual a la original · OLED-OEM</span>
+                        <span className="dot" />
+                      </button>
+                      <button
+                        className={`repair-opt quality-opt ${screenType === "incell" ? "active" : ""}`}
+                        onClick={() => setScreenType("incell")}
+                        data-testid="screen-incell"
+                      >
+                        <span className="qlabel">Baja calidad · Incell</span>
+                        <span className="dot" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </Reveal>
 
@@ -156,6 +247,19 @@ export default function Calculator() {
                   <span>Reparación</span>
                   <span>{repairLabel}</span>
                 </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={pieceLabel}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                    className="ticket-row"
+                  >
+                    <span>Pieza</span>
+                    <span>{pieceLabel}</span>
+                  </motion.div>
+                </AnimatePresence>
 
                 <div className="price-box">
                   <div className="label">Precio estimado</div>

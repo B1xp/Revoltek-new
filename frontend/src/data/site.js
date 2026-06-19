@@ -44,9 +44,9 @@ export const DEVICES = [
       { name: "iPhone 14 Pro", screen: 230, battery: 70 },
       { name: "iPhone 14", screen: 170, battery: 65 },
       { name: "iPhone 13", screen: 150, battery: 60 },
-      { name: "iPhone 12", screen: 130, battery: 55 },
-      { name: "iPhone 11", screen: 110, battery: 50 },
-      { name: "iPhone SE", screen: 90, battery: 45 },
+      { name: "iPhone 12", screen: 130, battery: 55, olderBattery: true },
+      { name: "iPhone 11", screen: 110, battery: 50, olderBattery: true },
+      { name: "iPhone SE", screen: 90, battery: 45, olderBattery: true },
     ],
   },
   {
