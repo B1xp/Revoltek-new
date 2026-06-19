@@ -1,10 +1,11 @@
 import { Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple, Check } from "lucide-react";
-import { CATALOG } from "../data/site";
+import { useCatalog } from "../context/CatalogContext";
 import Reveal from "./Reveal";
 
 const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple };
 
 export default function Services() {
+  const { catalog } = useCatalog();
   return (
     <section className="section" id="servicios">
       <div className="container">
@@ -19,7 +20,7 @@ export default function Services() {
         </Reveal>
 
         <div className="services-grid">
-          {CATALOG.map((c, i) => {
+          {catalog.map((c, i) => {
             const Icon = ICONS[c.icon];
             return (
               <Reveal key={c.id} delay={i * 0.06}>

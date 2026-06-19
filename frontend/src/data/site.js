@@ -13,7 +13,7 @@ export const CONTACT = {
   // --- WHATSAPP (solo números, con prefijo país, sin + ni espacios) ---
   whatsapp: "34633587924",
   email: "hola@revoltek.es",
-  address: "Calle de ejemplo 123 · Tu ciudad",
+  address: "C/ Fray Bartolomé de las Casas, 4 · 41849 Aznalcázar, Sevilla",
   hours: "Lun – Sáb · 10:00 – 20:00",
   instagram: "https://instagram.com",
 };

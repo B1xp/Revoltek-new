@@ -2,9 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple,
-  MessageCircle, Phone, Info, Mail,
+  MessageCircle, Phone, Info,
 } from "lucide-react";
-import { CATALOG, CONTACT, waLink } from "../data/site";
+import { CONTACT, waLink } from "../data/site";
+import { useCatalog } from "../context/CatalogContext";
 import Reveal from "./Reveal";
 
 const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple };
@@ -34,6 +35,7 @@ function AnimatedPrice({ value }) {
 }
 
 export default function Calculator() {
+  const { catalog } = useCatalog();
   const [catId, setCatId] = useState("apple");
   const [deviceId, setDeviceId] = useState("iphone");
   const [brandId, setBrandId] = useState("xiaomi");
@@ -45,7 +47,7 @@ export default function Calculator() {
   const [customModel, setCustomModel] = useState("");
   const [notes, setNotes] = useState("");
 
-  const cat = useMemo(() => CATALOG.find((c) => c.id === catId), [catId]);
+  const cat = useMemo(() => catalog.find((c) => c.id === catId) || catalog[0], [catalog, catId]);
   const isServices = cat.kind === "services";
   const isConsoles = cat.kind === "consoles";
   const isPhoneCat = cat.kind === "phoneDevices" || cat.kind === "models" || cat.kind === "brands";
@@ -134,29 +136,6 @@ export default function Calculator() {
     }.${notesPart} ¿Me confirmáis disponibilidad?`;
   })();
 
-  const mailSubject = `Solicitud de presupuesto — ${
-    isConsoles ? consoleTitle : isServices ? cat.name : `${cat.name} ${phoneModel.name}`
-  }`;
-  const mailBody = [
-    "Hola RevolTek, quiero solicitar un presupuesto:",
-    "",
-    `• Categoría: ${cat.name}`,
-    isConsoles ? `• Marca: ${consoleBrand.name}` : null,
-    isConsoles ? `• Modelo: ${consoleModel.name}` : null,
-    device ? `• Dispositivo: ${device.name}` : null,
-    phoneBrand ? `• Marca: ${phoneBrand.name}` : null,
-    isServiceLike ? `• Servicio: ${selectedService.name}` : `• Modelo: ${phoneModel.name}`,
-    !isServiceLike ? `• Reparación: ${labels[repair]}` : null,
-    !isServiceLike ? `• Pieza: ${pieceLabel}` : null,
-    `• Precio estimado: ${price > 0 ? price + "€" : "A consultar"}`,
-    notes.trim() ? `• Observaciones: ${notes.trim()}` : null,
-    "",
-    "Quedo a la espera. Gracias.",
-  ]
-    .filter(Boolean)
-    .join("\n");
-  const mailHref = `mailto:${CONTACT.email}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-
   return (
     <section className="section" id="precios">
       <div className="container">
@@ -177,7 +156,7 @@ export default function Calculator() {
                 <span>1</span> ¿Qué quieres reparar?
               </p>
               <div className="device-tabs cat-tabs">
-                {CATALOG.map((c) => {
+                {catalog.map((c) => {
                   const Icon = ICONS[c.icon];
                   return (
                     <button
@@ -583,9 +562,6 @@ export default function Calculator() {
                   </a>
                   <a href={`tel:${CONTACT.phoneRaw}`} className="btn btn-ghost" data-testid="ticket-call-btn">
                     <Phone size={18} /> Llamar ahora
-                  </a>
-                  <a href={mailHref} className="btn btn-ghost" data-testid="ticket-email-btn">
-                    <Mail size={18} /> Enviar por email
                   </a>
                 </div>
               </div>

@@ -39,3 +39,17 @@ elegantes, secciones, deslizables y botones interactivos.
 ## Backlog (P1/P2)
 - Formulario "pide tu presupuesto" con backend + email (Resend/SendGrid).
 - Galería de antes/después, reseñas de Google reales, blog/SEO.
+
+## Update 2026-06-19 (v2)
+- Catálogo ampliado: Apple, Samsung, Otra marca Android (Xiaomi/Realme/Oppo/Motorola/Honor/OnePlus/Pixel), Portátiles, Sobremesa y Consolas (Xbox/PlayStation/Nintendo con modelos→servicios).
+- Calculadora: selección por categoría primero; "Otro modelo" + campo libre; calidad de pieza (original/compatible, OLED-OEM/Incell, mayor capacidad para iPhone antiguos); observaciones.
+- Web multipágina (react-router): /servicios /precios /opiniones /faq /contacto + /admin.
+- BACKEND (FastAPI+Mongo): auth JWT admin (usuario Ale), price overrides editables.
+- Panel admin /admin/login -> /admin: edita todos los precios, busca, guarda (PUT overrides). Frontend aplica overrides sobre CATALOG base vía CatalogContext.
+- Footer con dirección real (Aznalcázar, Sevilla), teléfono y horario + enlace admin.
+- Eliminado botón "Enviar por email" del presupuesto (quedan WhatsApp + Llamar).
+- Verificado e2e: login ok/fallo, editar precio -> refleja en web pública, overrides limpiados tras prueba.
+
+## Backlog
+- Envío automático de presupuestos por email (Resend/SendGrid) si se desea.
+- Permitir editar también textos/contacto desde el panel admin.

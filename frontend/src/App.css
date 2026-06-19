@@ -980,6 +980,303 @@ main { padding-top: 76px; }
 .footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.4rem; }
 .footer .brand img { height: 50px; }
 .footer small { color: var(--muted); font-size: 0.85rem; }
+.footer-info { display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-info div { display: flex; align-items: center; gap: 0.5rem; color: var(--muted-2); font-size: 0.92rem; }
+.footer-info svg { color: var(--cyan); flex-shrink: 0; }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.footer-admin {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+.footer-admin:hover { color: var(--cyan); border-color: var(--cyan); }
+
+/* ============================================================
+   ADMIN
+   ============================================================ */
+.admin-auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+.admin-login-card {
+  width: min(440px, 100%);
+  padding: 2.4rem;
+  text-align: center;
+}
+.admin-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 1.2rem;
+}
+.admin-back:hover { color: var(--cyan); }
+.admin-logo { height: 56px; margin-bottom: 1rem; }
+.admin-login-card h1 { font-size: 1.6rem; margin: 0 0 0.4rem; }
+.admin-sub { color: var(--muted-2); font-size: 0.95rem; margin: 0 0 1.6rem; }
+.admin-label {
+  display: block;
+  text-align: left;
+  font-family: var(--display);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0.9rem 0 0.4rem;
+}
+.admin-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.25s ease;
+}
+.admin-input-wrap:focus-within { border-color: var(--cyan); }
+.admin-input-wrap svg { color: var(--muted); flex-shrink: 0; }
+.admin-input-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 0.98rem;
+  padding: 0.9rem 0;
+}
+.admin-error {
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff9a9a;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.88rem;
+  margin: 1rem 0 0.4rem;
+}
+.admin-login-card form .btn { margin-top: 1.4rem; }
+
+.admin-dash { min-height: 100vh; padding-bottom: 4rem; }
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--line);
+}
+.admin-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+.admin-topbar .brand img { height: 38px; }
+.admin-body { padding-top: 2.4rem; }
+.admin-head-row { margin-bottom: 1.6rem; }
+.admin-head-row h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0 0 0.4rem; }
+.admin-toolbar {
+  position: sticky;
+  top: 84px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 16px;
+  margin-bottom: 1.6rem;
+  flex-wrap: wrap;
+}
+.admin-search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 200px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.admin-search svg { color: var(--muted); }
+.admin-search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: var(--body);
+  padding: 0.7rem 0;
+}
+.admin-group { padding: 1.6rem; margin-bottom: 1.2rem; }
+.admin-group-title {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  margin: 0 0 1.2rem;
+  color: var(--cyan);
+}
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.9rem;
+}
+.price-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.price-field > span {
+  font-size: 0.85rem;
+  color: var(--muted-2);
+}
+.price-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.price-input:focus-within { border-color: var(--cyan); }
+.price-input input {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.65rem 0.8rem;
+}
+.price-input i {
+  font-style: normal;
+  color: var(--muted);
+  padding: 0 0.8rem;
+  border-left: 1px solid var(--line);
+  font-weight: 600;
+}
+.admin-save-bar { display: flex; justify-content: flex-end; margin-top: 1.4rem; }
+.adm-hint { color: var(--muted-2); font-size: 0.88rem; }
+.adm-block { margin-bottom: 1.4rem; }
+.adm-subhead {
+  font-family: var(--display);
+  font-size: 1rem;
+  color: var(--white);
+  margin: 0.4rem 0 0.7rem;
+}
+.adm-rowhead {
+  display: grid;
+  grid-template-columns: 1fr 120px 120px 40px;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0.2rem 0.4rem;
+}
+.adm-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 120px 40px;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.adm-name {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.adm-name:focus { border-color: var(--cyan); }
+.adm-num {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+.adm-num:focus-within { border-color: var(--cyan); }
+.adm-num input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.55rem 0.7rem;
+}
+.adm-num i {
+  font-style: normal;
+  color: var(--muted);
+  padding: 0 0.7rem;
+  border-left: 1px solid var(--line);
+}
+.adm-del {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  background: rgba(255, 80, 80, 0.08);
+  color: #ff8a8a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.adm-del:hover { background: rgba(255, 80, 80, 0.18); border-color: rgba(255, 80, 80, 0.4); }
+.adm-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px dashed var(--line-2);
+  background: transparent;
+  color: var(--cyan);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.adm-add:hover { border-color: var(--cyan); background: rgba(45, 212, 240, 0.08); }
+.adm-add-brand { border-color: var(--orange); color: var(--orange); margin-top: 0.2rem; }
+.adm-add-brand:hover { border-color: var(--orange); background: rgba(255, 146, 51, 0.08); }
+.adm-brandhead { display: flex; align-items: center; gap: 0.6rem; margin: 0.6rem 0 0.7rem; }
+.adm-brandname { flex: 1; font-family: var(--display); font-weight: 600; }
+.adm-console-model {
+  border-left: 2px solid var(--line-2);
+  padding-left: 1rem;
+  margin: 0 0 1rem 0.3rem;
+}
+@media (max-width: 560px) {
+  .adm-row, .adm-rowhead { grid-template-columns: 1fr 80px 80px 36px; gap: 0.4rem; }
+}
 
 .mobile-bar {
   position: fixed;
