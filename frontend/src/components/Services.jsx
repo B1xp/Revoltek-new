@@ -1,8 +1,8 @@
-import { Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple, Check } from "lucide-react";
+import { Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple, Check } from "lucide-react";
 import { CATALOG } from "../data/site";
 import Reveal from "./Reveal";
 
-const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple };
+const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple };
 
 export default function Services() {
   return (

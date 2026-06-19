@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple,
+  Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple,
   MessageCircle, Phone, Info,
 } from "lucide-react";
 import { CATALOG, CONTACT, waLink } from "../data/site";
 import Reveal from "./Reveal";
 
-const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Mouse, Apple };
+const ICONS = { Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple };
 
 function AnimatedPrice({ value }) {
   const [display, setDisplay] = useState(value);

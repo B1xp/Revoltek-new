@@ -9,7 +9,7 @@ const chips = [
   { icon: Clock, text: "Reparaciones en el día" },
   { icon: BadgeCheck, text: "Diagnóstico gratuito" },
 ];
-const marquee = ["iPhone", "Samsung Galaxy", "Xiaomi", "MacBook", "Portátiles", "Sobremesa", "Apple Watch", "Realme", "iPad", "Ratones gaming", "Motorola", "Honor"];
+const marquee = ["iPhone", "Samsung Galaxy", "Xiaomi", "MacBook", "Portátiles", "Sobremesa", "Apple Watch", "Realme", "iPad", "PlayStation · Xbox", "Nintendo Switch", "Honor"];
 
 export default function Hero() {
   const wa = waLink("Hola RevolTek, quiero información sobre una reparación.");

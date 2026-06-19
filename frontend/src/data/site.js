@@ -250,21 +250,25 @@ export const CATALOG = [
     ],
   },
 
-  // ---------- RATONES DE MARCA ----------
+  // ---------- CONSOLAS ----------
   {
-    id: "mice",
-    name: "Ratones de marca",
-    icon: "Mouse",
+    id: "consoles",
+    name: "Consolas",
+    icon: "Gamepad2",
     kind: "services",
-    note: "Logitech, Razer, SteelSeries, Corsair, Glorious y más.",
-    tagline: "Adiós al doble clic y al desgaste.",
-    highlights: ["Logitech · Razer...", "Doble clic / switch", "Rueda / encoder", "Cable y conector"],
+    note: "Consolas y mandos: Xbox One S/X, Series X/S, PlayStation 3/4/5 y Nintendo Switch 1/2.",
+    tagline: "Reparamos consolas y mandos de todas las marcas.",
+    highlights: ["Xbox · PlayStation · Switch", "Cambio de HDMI y limpieza", "Disco duro y componentes", "Mandos: joysticks y botones"],
     services: [
-      { name: "Cambio de switch (doble clic)", price: 25 },
-      { name: "Reparación rueda / encoder", price: 25 },
-      { name: "Cambio de cable / conector USB", price: 20 },
-      { name: "Limpieza y mantenimiento", price: 15 },
-      { name: "Cambio de patas / skates", price: 12 },
+      { name: "Reparación puerto HDMI", price: 60 },
+      { name: "Limpieza interna + pasta térmica", price: 35 },
+      { name: "Cambio de disco duro / SSD", price: 45 },
+      { name: "Cambio de componentes / placa", price: 80 },
+      { name: "Reparación lector de discos", price: 55 },
+      { name: "Ventilador / sobrecalentamiento", price: 45 },
+      { name: "Mando: reparación de joystick (drift)", price: 25 },
+      { name: "Mando: botones y gatillos", price: 25 },
+      { name: "Mando: limpieza y mantenimiento", price: 15 },
     ],
   },
 ];
@@ -320,9 +324,9 @@ export const REVIEWS = [
   },
   {
     name: "David Martín",
-    device: "Ratón Logitech",
+    device: "PlayStation 5",
     rating: 5,
-    text: "Tenía doble clic en mi ratón gaming y me lo dejaron como nuevo por mucho menos de lo que costaba uno nuevo. Genial.",
+    text: "Tenía drift en el joystick del mando y la consola fallaba por el HDMI. Me lo dejaron todo perfecto y por mucho menos de lo que esperaba. Genial.",
   },
   {
     name: "Nerea Castro",
