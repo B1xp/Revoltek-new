@@ -101,7 +101,7 @@ export default function Hero() {
 
           <motion.div
             className="float-badge glass"
-            style={{ bottom: "10%", right: "-2%" }}
+            style={{ top: "6%", right: "0%" }}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.75, duration: 0.6 }}
