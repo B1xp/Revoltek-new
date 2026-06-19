@@ -28,7 +28,7 @@ export default function Header() {
           <img src="/assets/icon_transparent.png" alt="RevolTek" />
           <span className="brand-name">
             {CONTACT.brand}
-            <small>Reparaciones Apple</small>
+            <small>Reparar es revolucionar.</small>
           </span>
         </Link>
 
