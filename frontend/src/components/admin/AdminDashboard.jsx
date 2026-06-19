@@ -5,7 +5,7 @@ import { Save, LogOut, Check, ExternalLink, Plus, X } from "lucide-react";
 import { CATALOG } from "../../data/site";
 import { useCatalog } from "../../context/CatalogContext";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = "https://revoltek-new.onrender.com/api";
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const num = (v) => (v === "" ? 0 : Number(v));
 
