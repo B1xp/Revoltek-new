@@ -84,16 +84,38 @@ class CatalogIn(BaseModel):
 
 
 # ---------------- Routes ----------------
+
+login_attempts = {}
+
 @api_router.get("/")
 async def root():
     return {"message": "RevolTek API"}
 
 
 @api_router.post("/auth/login")
-async def login(body: LoginIn):
+async def login(body: LoginIn, request: Request):
+    # Identificar la IP del cliente
+    client_ip = request.client.host
+    
+    # 1. Comprobar si la IP está bloqueada
+    if login_attempts.get(client_ip, {}).get("count", 0) >= 3:
+        raise HTTPException(status_code=403, detail="Acceso denegado temporalmente.")
+
     admin = await db.admins.find_one({"username": body.username})
+    
+    # 2. Comprobar credenciales
     if not admin or not verify_password(body.password, admin["password_hash"]):
-        raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos")
+        # Incrementar contador de intentos fallidos
+        ip_data = login_attempts.get(client_ip, {"count": 0})
+        ip_data["count"] += 1
+        login_attempts[client_ip] = ip_data
+        
+        # Error genérico para no dar pistas
+        raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos.")
+    
+    # 3. Si es correcto, limpiar contador de la IP
+    login_attempts.pop(client_ip, None)
+    
     token = create_access_token(admin["username"])
     return {"token": token, "username": admin["username"]}
 
