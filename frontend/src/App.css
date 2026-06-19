@@ -256,6 +256,9 @@ body {
 }
 .nav a:hover { color: var(--white); }
 .nav a:hover::after { transform: scaleX(1); }
+.nav a.active { color: var(--white); }
+.nav a.active::after { transform: scaleX(1); }
+.mobile-menu a.active { color: var(--cyan); }
 .burger {
   display: none;
   background: rgba(255, 255, 255, 0.05);
@@ -285,7 +288,8 @@ body {
 }
 
 /* HERO */
-.hero { padding: 150px 0 80px; position: relative; }
+main { padding-top: 76px; }
+.hero { padding: 74px 0 80px; position: relative; }
 .hero-grid {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -873,7 +877,7 @@ body {
   .header .header-cta { display: none; }
 }
 @media (max-width: 560px) {
-  .hero { padding: 120px 0 50px; }
+  .hero { padding: 40px 0 40px; }
   .services-grid, .why-grid, .stats { grid-template-columns: 1fr; }
   .device-tabs { grid-template-columns: repeat(2, 1fr); }
   .model-grid { grid-template-columns: 1fr; }

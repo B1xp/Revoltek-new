@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { MessageCircle, Calculator, ShieldCheck, Clock, BadgeCheck, Cpu } from "lucide-react";
 import { CONTACT, waLink } from "../data/site";
 
@@ -52,9 +53,9 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.24, ease }}
           >
-            <a href="#precios" className="btn btn-primary" data-testid="hero-calc-btn">
+            <Link to="/precios" className="btn btn-primary" data-testid="hero-calc-btn">
               <Calculator size={19} /> Calcular precio
-            </a>
+            </Link>
             <a href={wa} target="_blank" rel="noreferrer" className="btn btn-wa" data-testid="hero-wa-btn">
               <MessageCircle size={19} /> WhatsApp
             </a>

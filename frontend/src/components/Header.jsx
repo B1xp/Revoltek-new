@@ -1,49 +1,42 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone } from "lucide-react";
+import { NavLink, Link } from "react-router-dom";
 import { CONTACT } from "../data/site";
 
 const LINKS = [
-  { href: "#servicios", label: "Servicios" },
-  { href: "#precios", label: "Precios" },
-  { href: "#opiniones", label: "Opiniones" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#contacto", label: "Contacto" },
+  { to: "/servicios", label: "Servicios" },
+  { to: "/precios", label: "Precios" },
+  { to: "/opiniones", label: "Opiniones" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/contacto", label: "Contacto" },
 ];
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <motion.header
-      className={`header ${scrolled ? "scrolled" : ""}`}
+      className="header scrolled"
       initial={{ y: -90 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       data-testid="site-header"
     >
       <div className="container header-inner">
-        <a href="#top" className="brand" data-testid="brand-logo">
+        <Link to="/" className="brand" data-testid="brand-logo" onClick={() => setOpen(false)}>
           <img src="/assets/icon_transparent.png" alt="RevolTek" />
           <span className="brand-name">
             {CONTACT.brand}
             <small>Reparaciones Apple</small>
           </span>
-        </a>
+        </Link>
 
         <nav className="nav" data-testid="desktop-nav">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} data-testid={`nav-${l.label.toLowerCase()}`}>
+            <NavLink key={l.to} to={l.to} data-testid={`nav-${l.label.toLowerCase()}`}>
               {l.label}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
@@ -77,10 +70,13 @@ export default function Header() {
             data-testid="mobile-menu"
           >
             <div className="mobile-menu">
+              <NavLink to="/" onClick={() => setOpen(false)} end>
+                Inicio
+              </NavLink>
               {LINKS.map((l) => (
-                <a key={l.href} href={l.href} onClick={() => setOpen(false)}>
+                <NavLink key={l.to} to={l.to} onClick={() => setOpen(false)}>
                   {l.label}
-                </a>
+                </NavLink>
               ))}
             </div>
           </motion.div>
