@@ -8,10 +8,10 @@ export const CONTACT = {
   brandFull: "RevolTek Reparaciones",
   tagline: "Especialistas en Apple",
   // --- TELÉFONO PARA LLAMADA DIRECTA (edítalo) ---
-  phoneDisplay: "+34 600 00 00 00",
-  phoneRaw: "+34600000000",
+  phoneDisplay: "+34 633 58 79 24",
+  phoneRaw: "+34633587924",
   // --- WHATSAPP (solo números, con prefijo país, sin + ni espacios) ---
-  whatsapp: "34600000000",
+  whatsapp: "34633587924",
   email: "hola@revoltek.es",
   address: "Calle de ejemplo 123 · Tu ciudad",
   hours: "Lun – Sáb · 10:00 – 20:00",
