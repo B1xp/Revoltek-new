@@ -94,26 +94,26 @@ async def root():
 
 @api_router.post("/auth/login")
 async def login(body: LoginIn, request: Request):
-    # Identificar la IP del cliente
+    
     client_ip = request.client.host
     
-    # 1. Comprobar si la IP está bloqueada
+    
     if login_attempts.get(client_ip, {}).get("count", 0) >= 3:
         raise HTTPException(status_code=403, detail="Acceso denegado temporalmente.")
 
     admin = await db.admins.find_one({"username": body.username})
     
-    # 2. Comprobar credenciales
+    
     if not admin or not verify_password(body.password, admin["password_hash"]):
-        # Incrementar contador de intentos fallidos
+        
         ip_data = login_attempts.get(client_ip, {"count": 0})
         ip_data["count"] += 1
         login_attempts[client_ip] = ip_data
         
-        # Error genérico para no dar pistas
+        
         raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos.")
     
-    # 3. Si es correcto, limpiar contador de la IP
+
     login_attempts.pop(client_ip, None)
     
     token = create_access_token(admin["username"])
@@ -170,9 +170,15 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def seed_admin():
-    username = os.environ.get("ADMIN_USERNAME", "Ale")
-    password = os.environ.get("ADMIN_PASSWORD", "admin")
+    username = os.environ.get("ADMIN_USERNAME")
+    password = os.environ.get("ADMIN_PASSWORD")
+    
+    if not username or not password:
+        logger.error("Error: Las variables ADMIN_USERNAME o ADMIN_PASSWORD no están configuradas.")
+        return
+
     existing = await db.admins.find_one({"username": username})
+    
     if existing is None:
         await db.admins.insert_one(
             {"username": username, "password_hash": hash_password(password), "created_at": datetime.now(timezone.utc).isoformat()}
