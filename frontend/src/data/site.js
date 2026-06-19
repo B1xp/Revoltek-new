@@ -36,7 +36,7 @@ export const CATALOG = [
     icon: "Apple",
     kind: "phoneDevices",
     tagline: "Especialistas en todo el ecosistema Apple.",
-    highlights: ["iPhone · iPad", "Mac · Apple Watch", "Pantalla y batería", "Daños por líquidos"],
+    highlights: ["iPhone · iPad", "MacBook · Apple Watch", "Pantalla y batería", "Daños por líquidos"],
     devices: [
       {
         id: "iphone",
@@ -74,7 +74,7 @@ export const CATALOG = [
       },
       {
         id: "mac",
-        name: "Mac",
+        name: "MacBook",
         icon: "Laptop",
         phone: false,
         labels: { screen: "Pantalla", battery: "Batería" },
