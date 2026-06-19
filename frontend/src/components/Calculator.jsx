@@ -47,31 +47,45 @@ export default function Calculator() {
 
   const cat = useMemo(() => CATALOG.find((c) => c.id === catId), [catId]);
   const isServices = cat.kind === "services";
-  const hasSub = cat.kind === "phoneDevices" || cat.kind === "brands";
+  const isConsoles = cat.kind === "consoles";
+  const isPhoneCat = cat.kind === "phoneDevices" || cat.kind === "models" || cat.kind === "brands";
 
+  // ----- Phone-type resolution -----
   const device = cat.kind === "phoneDevices" ? cat.devices.find((d) => d.id === deviceId) || cat.devices[0] : null;
-  const brand = cat.kind === "brands" ? cat.brands.find((b) => b.id === brandId) || cat.brands[0] : null;
-
-  const models = device ? device.models : brand ? brand.models : cat.models || [];
+  const phoneBrand = cat.kind === "brands" ? cat.brands.find((b) => b.id === brandId) || cat.brands[0] : null;
+  const models = device ? device.models : phoneBrand ? phoneBrand.models : cat.models || [];
   const labels = device ? device.labels : cat.labels || { screen: "Pantalla", battery: "Batería" };
   const isPhone = device ? device.phone : cat.phone || false;
-  const isOther = !isServices && modelIdx === -1;
-  const model = isOther
+  const isOther = isPhoneCat && modelIdx === -1;
+  const phoneModel = isOther
     ? { name: customModel.trim() ? customModel.trim() : "Otro modelo (a especificar)", screen: 0, battery: 0 }
     : models[Math.min(modelIdx, models.length - 1)] || {};
-  const service = isServices ? cat.services[Math.min(serviceIdx, cat.services.length - 1)] : null;
 
-  const price = isServices ? service.price : model[repair];
-  const repairLabel = isServices ? service.name : labels[repair];
+  // ----- Console resolution -----
+  const consoleBrand = isConsoles ? cat.brands.find((b) => b.id === brandId) || cat.brands[0] : null;
+  const consoleModels = isConsoles ? consoleBrand.models : [];
+  const consoleModel = isConsoles ? consoleModels[Math.min(modelIdx, consoleModels.length - 1)] || consoleModels[0] : null;
+  const consoleServices = isConsoles ? consoleModel.services : [];
+
+  // ----- Service (flat / console) -----
+  const isServiceLike = isServices || isConsoles;
+  const serviceList = isConsoles ? consoleServices : isServices ? cat.services : [];
+  const selectedService = isServiceLike ? serviceList[Math.min(serviceIdx, serviceList.length - 1)] || serviceList[0] : null;
+
+  const price = isServiceLike ? selectedService.price : phoneModel[repair];
 
   useEffect(() => {
     setQuality("original");
   }, [catId, deviceId, brandId, modelIdx, repair]);
 
+  useEffect(() => {
+    setServiceIdx(0);
+  }, [catId, brandId, modelIdx]);
+
   const onCategory = (id) => {
     setCatId(id);
     setDeviceId("iphone");
-    setBrandId("xiaomi");
+    setBrandId(id === "consoles" ? "xbox" : "xiaomi");
     setModelIdx(0);
     setServiceIdx(0);
     setRepair("screen");
@@ -85,17 +99,16 @@ export default function Calculator() {
     { id: "original", label: "Original" },
     { id: "compatible", label: "Compatible" },
   ];
-  if (repair === "battery" && model.olderBattery) {
+  if (repair === "battery" && phoneModel.olderBattery) {
     qualityOpts.push({
       id: "capacidad",
       label: "Mayor capacidad",
       info: "Consulte a nuestros técnicos para más información sobre la capacidad de la batería.",
     });
   }
-  const showScreenTypes = !isServices && repair === "screen" && quality === "compatible" && isPhone;
+  const showScreenTypes = isPhoneCat && repair === "screen" && quality === "compatible" && isPhone;
 
   const pieceLabel = (() => {
-    if (isServices) return service.name;
     if (repair === "battery") {
       if (quality === "capacidad") return "Batería de mayor capacidad";
       return quality === "original" ? "Batería original" : "Batería compatible";
@@ -105,28 +118,36 @@ export default function Calculator() {
     return "Pantalla compatible";
   })();
 
-  const stepModel = hasSub ? 3 : 2;
-  const stepRepair = hasSub ? 4 : 3;
-  const stepQuality = hasSub ? 5 : 4;
+  // device label for ticket / messages
+  const consoleTitle = isConsoles ? `${consoleBrand.name} ${consoleModel.name}` : "";
 
-  const message = isServices
-    ? `Hola RevolTek, quiero presupuesto para *${cat.name}* — *${service.name}* (desde ${price}€).${
-        notes.trim() ? ` Observaciones: ${notes.trim()}.` : ""
-      } ¿Me confirmáis disponibilidad?`
-    : `Hola RevolTek, quiero presupuesto para un *${cat.name} ${model.name}* — *${pieceLabel}*${
-        price > 0 ? ` (precio web: ${price}€)` : " (precio a consultar)"
-      }.${notes.trim() ? ` Observaciones: ${notes.trim()}.` : ""} ¿Me confirmáis disponibilidad?`;
+  const message = (() => {
+    const notesPart = notes.trim() ? ` Observaciones: ${notes.trim()}.` : "";
+    if (isConsoles) {
+      return `Hola RevolTek, quiero presupuesto para *Consolas — ${consoleTitle}*: *${selectedService.name}* (desde ${price}€).${notesPart} ¿Me confirmáis disponibilidad?`;
+    }
+    if (isServices) {
+      return `Hola RevolTek, quiero presupuesto para *${cat.name}* — *${selectedService.name}* (desde ${price}€).${notesPart} ¿Me confirmáis disponibilidad?`;
+    }
+    return `Hola RevolTek, quiero presupuesto para un *${cat.name} ${phoneModel.name}* — *${pieceLabel}*${
+      price > 0 ? ` (precio web: ${price}€)` : " (precio a consultar)"
+    }.${notesPart} ¿Me confirmáis disponibilidad?`;
+  })();
 
-  const mailSubject = `Solicitud de presupuesto — ${isServices ? cat.name : `${cat.name} ${model.name}`}`;
+  const mailSubject = `Solicitud de presupuesto — ${
+    isConsoles ? consoleTitle : isServices ? cat.name : `${cat.name} ${phoneModel.name}`
+  }`;
   const mailBody = [
     "Hola RevolTek, quiero solicitar un presupuesto:",
     "",
     `• Categoría: ${cat.name}`,
-    !isServices && device ? `• Dispositivo: ${device.name}` : null,
-    !isServices && brand ? `• Marca: ${brand.name}` : null,
-    isServices ? `• Servicio: ${service.name}` : `• Modelo: ${model.name}`,
-    !isServices ? `• Reparación: ${labels[repair]}` : null,
-    !isServices ? `• Pieza: ${pieceLabel}` : null,
+    isConsoles ? `• Marca: ${consoleBrand.name}` : null,
+    isConsoles ? `• Modelo: ${consoleModel.name}` : null,
+    device ? `• Dispositivo: ${device.name}` : null,
+    phoneBrand ? `• Marca: ${phoneBrand.name}` : null,
+    isServiceLike ? `• Servicio: ${selectedService.name}` : `• Modelo: ${phoneModel.name}`,
+    !isServiceLike ? `• Reparación: ${labels[repair]}` : null,
+    !isServiceLike ? `• Pieza: ${pieceLabel}` : null,
     `• Precio estimado: ${price > 0 ? price + "€" : "A consultar"}`,
     notes.trim() ? `• Observaciones: ${notes.trim()}` : null,
     "",
@@ -135,8 +156,6 @@ export default function Calculator() {
     .filter(Boolean)
     .join("\n");
   const mailHref = `mailto:${CONTACT.email}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-
-  const CatIcon = ICONS[cat.icon];
 
   return (
     <section className="section" id="precios">
@@ -174,7 +193,64 @@ export default function Calculator() {
                 })}
               </div>
 
-              {isServices ? (
+              {/* ---------- CONSOLES ---------- */}
+              {isConsoles && (
+                <>
+                  <p className="calc-step-label">
+                    <span>2</span> Marca de consola
+                  </p>
+                  <div className="brand-tabs">
+                    {cat.brands.map((b) => (
+                      <button
+                        key={b.id}
+                        className={`brand-tab ${brandId === b.id ? "active" : ""}`}
+                        onClick={() => onBrand(b.id)}
+                        data-testid={`console-brand-${b.id}`}
+                      >
+                        {b.name}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p className="calc-step-label">
+                    <span>3</span> Modelo de consola
+                  </p>
+                  <div className="model-grid">
+                    {consoleModels.map((m, i) => (
+                      <button
+                        key={m.name}
+                        className={`model-chip ${modelIdx === i ? "active" : ""}`}
+                        onClick={() => setModelIdx(i)}
+                        data-testid={`console-model-${i}`}
+                      >
+                        {m.name}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p className="calc-step-label">
+                    <span>4</span> Elige el servicio
+                  </p>
+                  <div className="svc-list">
+                    {consoleServices.map((s, i) => (
+                      <button
+                        key={s.name}
+                        className={`svc-opt ${serviceIdx === i ? "active" : ""}`}
+                        onClick={() => setServiceIdx(i)}
+                        data-testid={`service-opt-${i}`}
+                      >
+                        <span>{s.name}</span>
+                        <span className="svc-price">
+                          <small>desde</small> {s.price}€
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* ---------- FLAT SERVICES (laptops / desktops) ---------- */}
+              {isServices && (
                 <>
                   {cat.note && <p className="cat-note">{cat.note}</p>}
                   <p className="calc-step-label">
@@ -196,7 +272,10 @@ export default function Calculator() {
                     ))}
                   </div>
                 </>
-              ) : (
+              )}
+
+              {/* ---------- PHONES / TABLETS / MAC / WATCH ---------- */}
+              {isPhoneCat && (
                 <>
                   {cat.kind === "phoneDevices" && (
                     <>
@@ -243,7 +322,7 @@ export default function Calculator() {
                   )}
 
                   <p className="calc-step-label">
-                    <span>{stepModel}</span> Selecciona el modelo
+                    <span>{cat.kind === "models" ? 2 : 3}</span> Selecciona el modelo
                   </p>
                   <div className="model-grid">
                     {models.map((m, i) => (
@@ -276,7 +355,7 @@ export default function Calculator() {
                   )}
 
                   <p className="calc-step-label">
-                    <span>{stepRepair}</span> Tipo de reparación
+                    <span>{cat.kind === "models" ? 3 : 4}</span> Tipo de reparación
                   </p>
                   <div className="repair-toggle">
                     {["screen", "battery"].map((r) => (
@@ -293,7 +372,7 @@ export default function Calculator() {
                   </div>
 
                   <p className="calc-step-label">
-                    <span>{stepQuality}</span> Calidad de la pieza
+                    <span>{cat.kind === "models" ? 4 : 5}</span> Calidad de la pieza
                   </p>
                   <div className="quality-grid">
                     {qualityOpts.map((o) => (
@@ -388,10 +467,32 @@ export default function Calculator() {
                   <span>{cat.name}</span>
                 </div>
 
-                {isServices ? (
+                {isConsoles && (
+                  <>
+                    <div className="ticket-row">
+                      <span>Marca</span>
+                      <span>{consoleBrand.name}</span>
+                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={consoleModel.name}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
+                        className="ticket-row"
+                      >
+                        <span>Modelo</span>
+                        <span>{consoleModel.name}</span>
+                      </motion.div>
+                    </AnimatePresence>
+                  </>
+                )}
+
+                {isServiceLike ? (
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={service.name}
+                      key={selectedService.name}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
@@ -399,7 +500,7 @@ export default function Calculator() {
                       className="ticket-row"
                     >
                       <span>Servicio</span>
-                      <span>{service.name}</span>
+                      <span>{selectedService.name}</span>
                     </motion.div>
                   </AnimatePresence>
                 ) : (
@@ -410,15 +511,15 @@ export default function Calculator() {
                         <span>{device.name}</span>
                       </div>
                     )}
-                    {brand && (
+                    {phoneBrand && (
                       <div className="ticket-row">
                         <span>Marca</span>
-                        <span>{brand.name}</span>
+                        <span>{phoneBrand.name}</span>
                       </div>
                     )}
                     <AnimatePresence mode="wait">
                       <motion.div
-                        key={model.name}
+                        key={phoneModel.name}
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
@@ -426,7 +527,7 @@ export default function Calculator() {
                         className="ticket-row"
                       >
                         <span>Modelo</span>
-                        <span>{model.name}</span>
+                        <span>{phoneModel.name}</span>
                       </motion.div>
                     </AnimatePresence>
                     <div className="ticket-row">
@@ -457,7 +558,7 @@ export default function Calculator() {
                 )}
 
                 <div className="price-box">
-                  <div className="label">{isServices ? "Precio desde" : "Precio estimado"}</div>
+                  <div className="label">{isServiceLike ? "Precio desde" : "Precio estimado"}</div>
                   {price > 0 ? (
                     <div className="amount grad-text" data-testid="price-amount">
                       <AnimatedPrice value={price} />€
@@ -480,18 +581,10 @@ export default function Calculator() {
                   >
                     <MessageCircle size={18} /> Reservar por WhatsApp
                   </a>
-                  <a
-                    href={`tel:${CONTACT.phoneRaw}`}
-                    className="btn btn-ghost"
-                    data-testid="ticket-call-btn"
-                  >
+                  <a href={`tel:${CONTACT.phoneRaw}`} className="btn btn-ghost" data-testid="ticket-call-btn">
                     <Phone size={18} /> Llamar ahora
                   </a>
-                  <a
-                    href={mailHref}
-                    className="btn btn-ghost"
-                    data-testid="ticket-email-btn"
-                  >
+                  <a href={mailHref} className="btn btn-ghost" data-testid="ticket-email-btn">
                     <Mail size={18} /> Enviar por email
                   </a>
                 </div>

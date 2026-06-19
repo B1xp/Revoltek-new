@@ -255,20 +255,154 @@ export const CATALOG = [
     id: "consoles",
     name: "Consolas",
     icon: "Gamepad2",
-    kind: "services",
-    note: "Consolas y mandos: Xbox One S/X, Series X/S, PlayStation 3/4/5 y Nintendo Switch 1/2.",
+    kind: "consoles",
+    note: "Consolas y mandos de Xbox, PlayStation y Nintendo.",
     tagline: "Reparamos consolas y mandos de todas las marcas.",
-    highlights: ["Xbox · PlayStation · Switch", "Cambio de HDMI y limpieza", "Disco duro y componentes", "Mandos: joysticks y botones"],
-    services: [
-      { name: "Reparación puerto HDMI", price: 60 },
-      { name: "Limpieza interna + pasta térmica", price: 35 },
-      { name: "Cambio de disco duro / SSD", price: 45 },
-      { name: "Cambio de componentes / placa", price: 80 },
-      { name: "Reparación lector de discos", price: 55 },
-      { name: "Ventilador / sobrecalentamiento", price: 45 },
-      { name: "Mando: reparación de joystick (drift)", price: 25 },
-      { name: "Mando: botones y gatillos", price: 25 },
-      { name: "Mando: limpieza y mantenimiento", price: 15 },
+    highlights: ["Xbox · PlayStation · Switch", "Cambio de HDMI y limpieza", "Lector, disco y placa", "Mandos: joysticks y botones"],
+    brands: [
+      {
+        id: "xbox",
+        name: "Xbox",
+        models: [
+          {
+            name: "Xbox Series X",
+            services: [
+              { name: "Reparación puerto HDMI", price: 70 },
+              { name: "Limpieza interna + pasta térmica", price: 40 },
+              { name: "Cambio de ventilador", price: 50 },
+              { name: "Reparación lector de discos", price: 60 },
+              { name: "Ampliación / cambio de SSD", price: 80 },
+              { name: "Reparación de placa", price: 90 },
+            ],
+          },
+          {
+            name: "Xbox Series S",
+            services: [
+              { name: "Reparación puerto HDMI", price: 65 },
+              { name: "Limpieza interna + pasta térmica", price: 35 },
+              { name: "Cambio de ventilador", price: 45 },
+              { name: "Ampliación / cambio de SSD", price: 70 },
+              { name: "Reparación de placa", price: 85 },
+            ],
+          },
+          {
+            name: "Xbox One X",
+            services: [
+              { name: "Reparación puerto HDMI", price: 60 },
+              { name: "Limpieza interna + pasta térmica", price: 35 },
+              { name: "Cambio de ventilador", price: 45 },
+              { name: "Reparación lector de discos", price: 55 },
+              { name: "Cambio de disco duro / SSD", price: 45 },
+              { name: "Reparación de placa", price: 80 },
+            ],
+          },
+          {
+            name: "Xbox One S",
+            services: [
+              { name: "Reparación puerto HDMI", price: 55 },
+              { name: "Limpieza interna + pasta térmica", price: 30 },
+              { name: "Cambio de ventilador", price: 40 },
+              { name: "Reparación lector de discos", price: 50 },
+              { name: "Cambio de disco duro / SSD", price: 45 },
+              { name: "Reparación de placa", price: 75 },
+            ],
+          },
+          {
+            name: "Mando Xbox",
+            services: [
+              { name: "Reparación de joystick (drift)", price: 25 },
+              { name: "Botones y gatillos", price: 25 },
+              { name: "Reparación puerto de carga", price: 30 },
+              { name: "Limpieza y mantenimiento", price: 15 },
+            ],
+          },
+        ],
+      },
+      {
+        id: "playstation",
+        name: "PlayStation",
+        models: [
+          {
+            name: "PlayStation 5",
+            services: [
+              { name: "Reparación puerto HDMI", price: 75 },
+              { name: "Limpieza interna + pasta térmica", price: 40 },
+              { name: "Cambio de ventilador", price: 50 },
+              { name: "Reparación lector de discos", price: 65 },
+              { name: "Ampliación / cambio de SSD", price: 80 },
+              { name: "Reparación de placa", price: 95 },
+            ],
+          },
+          {
+            name: "PlayStation 4",
+            services: [
+              { name: "Reparación puerto HDMI", price: 60 },
+              { name: "Limpieza interna + pasta térmica", price: 35 },
+              { name: "Cambio de ventilador", price: 45 },
+              { name: "Reparación lector de discos", price: 55 },
+              { name: "Cambio de disco duro / SSD", price: 45 },
+              { name: "Reparación de placa", price: 80 },
+            ],
+          },
+          {
+            name: "PlayStation 3",
+            services: [
+              { name: "Reparación puerto HDMI", price: 55 },
+              { name: "Limpieza interna + pasta térmica", price: 30 },
+              { name: "Reparación lector de discos", price: 50 },
+              { name: "Cambio de disco duro", price: 40 },
+              { name: "Reparación luz amarilla (YLOD)", price: 70 },
+              { name: "Reparación de placa", price: 75 },
+            ],
+          },
+          {
+            name: "Mando DualSense / DualShock",
+            services: [
+              { name: "Reparación de joystick (drift)", price: 25 },
+              { name: "Botones y gatillos", price: 25 },
+              { name: "Cambio de batería", price: 25 },
+              { name: "Limpieza y mantenimiento", price: 15 },
+            ],
+          },
+        ],
+      },
+      {
+        id: "nintendo",
+        name: "Nintendo",
+        models: [
+          {
+            name: "Nintendo Switch 2",
+            services: [
+              { name: "Cambio de pantalla", price: 120 },
+              { name: "Cambio de batería", price: 60 },
+              { name: "Reparación puerto de carga", price: 50 },
+              { name: "Lector de tarjetas de juego", price: 45 },
+              { name: "Limpieza interna + ventilador", price: 30 },
+              { name: "Reparación de placa", price: 90 },
+            ],
+          },
+          {
+            name: "Nintendo Switch 1",
+            services: [
+              { name: "Cambio de pantalla", price: 90 },
+              { name: "Cambio de batería", price: 45 },
+              { name: "Reparación puerto de carga", price: 45 },
+              { name: "Lector de cartuchos", price: 40 },
+              { name: "Limpieza interna + ventilador", price: 25 },
+              { name: "Reparación de placa", price: 80 },
+            ],
+          },
+          {
+            name: "Joy-Con / Mando Pro",
+            services: [
+              { name: "Joystick Joy-Con (drift)", price: 25 },
+              { name: "Botones y gatillos", price: 25 },
+              { name: "Cambio de batería", price: 25 },
+              { name: "Limpieza y mantenimiento", price: 15 },
+            ],
+          },
+        ],
+      },
     ],
   },
 ];
