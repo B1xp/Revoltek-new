@@ -535,6 +535,56 @@ main { padding-top: 76px; }
   border-color: var(--orange);
   background: rgba(255, 146, 51, 0.1);
 }
+.model-chip.other {
+  border-style: dashed;
+  color: var(--cyan);
+}
+.model-chip.other.active {
+  border-color: var(--cyan);
+  background: rgba(45, 212, 240, 0.1);
+  color: var(--white);
+}
+.calc-input,
+.calc-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line-2);
+  border-radius: 13px;
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 0.95rem;
+  padding: 0.85rem 1rem;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.calc-input {
+  margin: -0.8rem 0 1.6rem;
+}
+.calc-textarea {
+  margin: 0 0 0.2rem;
+  resize: vertical;
+  min-height: 84px;
+  line-height: 1.5;
+}
+.calc-input:focus,
+.calc-textarea:focus {
+  outline: none;
+  border-color: var(--cyan);
+  background: rgba(45, 212, 240, 0.06);
+}
+.calc-input::placeholder,
+.calc-textarea::placeholder {
+  color: var(--muted);
+}
+.ticket-notes {
+  align-items: flex-start;
+}
+.ticket-notes span:last-child {
+  max-width: 62%;
+  font-weight: 500;
+  font-family: var(--body);
+  color: var(--muted-2);
+  line-height: 1.4;
+}
 .repair-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
 .repair-opt {
   display: flex;

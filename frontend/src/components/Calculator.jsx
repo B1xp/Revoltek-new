@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Smartphone, Tablet, Laptop, Watch, Monitor, Gamepad2, Apple,
-  MessageCircle, Phone, Info,
+  MessageCircle, Phone, Info, Mail,
 } from "lucide-react";
 import { CATALOG, CONTACT, waLink } from "../data/site";
 import Reveal from "./Reveal";
@@ -42,6 +42,8 @@ export default function Calculator() {
   const [repair, setRepair] = useState("screen");
   const [quality, setQuality] = useState("original");
   const [screenType, setScreenType] = useState("oled");
+  const [customModel, setCustomModel] = useState("");
+  const [notes, setNotes] = useState("");
 
   const cat = useMemo(() => CATALOG.find((c) => c.id === catId), [catId]);
   const isServices = cat.kind === "services";
@@ -53,7 +55,10 @@ export default function Calculator() {
   const models = device ? device.models : brand ? brand.models : cat.models || [];
   const labels = device ? device.labels : cat.labels || { screen: "Pantalla", battery: "Batería" };
   const isPhone = device ? device.phone : cat.phone || false;
-  const model = models[Math.min(modelIdx, models.length - 1)] || {};
+  const isOther = !isServices && modelIdx === -1;
+  const model = isOther
+    ? { name: customModel.trim() ? customModel.trim() : "Otro modelo (a especificar)", screen: 0, battery: 0 }
+    : models[Math.min(modelIdx, models.length - 1)] || {};
   const service = isServices ? cat.services[Math.min(serviceIdx, cat.services.length - 1)] : null;
 
   const price = isServices ? service.price : model[repair];
@@ -71,9 +76,10 @@ export default function Calculator() {
     setServiceIdx(0);
     setRepair("screen");
     setQuality("original");
+    setCustomModel("");
   };
-  const onDevice = (id) => { setDeviceId(id); setModelIdx(0); setRepair("screen"); };
-  const onBrand = (id) => { setBrandId(id); setModelIdx(0); setRepair("screen"); };
+  const onDevice = (id) => { setDeviceId(id); setModelIdx(0); setRepair("screen"); setCustomModel(""); };
+  const onBrand = (id) => { setBrandId(id); setModelIdx(0); setRepair("screen"); setCustomModel(""); };
 
   const qualityOpts = [
     { id: "original", label: "Original" },
@@ -104,10 +110,31 @@ export default function Calculator() {
   const stepQuality = hasSub ? 5 : 4;
 
   const message = isServices
-    ? `Hola RevolTek, quiero presupuesto para *${cat.name}* — *${service.name}* (desde ${price}€). ¿Me confirmáis disponibilidad?`
+    ? `Hola RevolTek, quiero presupuesto para *${cat.name}* — *${service.name}* (desde ${price}€).${
+        notes.trim() ? ` Observaciones: ${notes.trim()}.` : ""
+      } ¿Me confirmáis disponibilidad?`
     : `Hola RevolTek, quiero presupuesto para un *${cat.name} ${model.name}* — *${pieceLabel}*${
-        price > 0 ? ` (precio web: ${price}€)` : ""
-      }. ¿Me confirmáis disponibilidad?`;
+        price > 0 ? ` (precio web: ${price}€)` : " (precio a consultar)"
+      }.${notes.trim() ? ` Observaciones: ${notes.trim()}.` : ""} ¿Me confirmáis disponibilidad?`;
+
+  const mailSubject = `Solicitud de presupuesto — ${isServices ? cat.name : `${cat.name} ${model.name}`}`;
+  const mailBody = [
+    "Hola RevolTek, quiero solicitar un presupuesto:",
+    "",
+    `• Categoría: ${cat.name}`,
+    !isServices && device ? `• Dispositivo: ${device.name}` : null,
+    !isServices && brand ? `• Marca: ${brand.name}` : null,
+    isServices ? `• Servicio: ${service.name}` : `• Modelo: ${model.name}`,
+    !isServices ? `• Reparación: ${labels[repair]}` : null,
+    !isServices ? `• Pieza: ${pieceLabel}` : null,
+    `• Precio estimado: ${price > 0 ? price + "€" : "A consultar"}`,
+    notes.trim() ? `• Observaciones: ${notes.trim()}` : null,
+    "",
+    "Quedo a la espera. Gracias.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const mailHref = `mailto:${CONTACT.email}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
   const CatIcon = ICONS[cat.icon];
 
@@ -229,7 +256,24 @@ export default function Calculator() {
                         {m.name}
                       </button>
                     ))}
+                    <button
+                      className={`model-chip other ${isOther ? "active" : ""}`}
+                      onClick={() => setModelIdx(-1)}
+                      data-testid="model-other"
+                    >
+                      + Otro modelo
+                    </button>
                   </div>
+
+                  {isOther && (
+                    <input
+                      className="calc-input"
+                      placeholder="Escribe tu modelo exacto (ej. iPhone 8 Plus, Galaxy A52...)"
+                      value={customModel}
+                      onChange={(e) => setCustomModel(e.target.value)}
+                      data-testid="custom-model-input"
+                    />
+                  )}
 
                   <p className="calc-step-label">
                     <span>{stepRepair}</span> Tipo de reparación
@@ -310,6 +354,18 @@ export default function Calculator() {
                   </AnimatePresence>
                 </>
               )}
+
+              <p className="calc-substep" style={{ marginTop: "0.4rem" }}>
+                Observaciones (opcional)
+              </p>
+              <textarea
+                className="calc-textarea"
+                rows={3}
+                placeholder="Cuéntanos el problema: si enciende, golpes, daños por líquidos, color, etc."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                data-testid="notes-input"
+              />
             </div>
           </Reveal>
 
@@ -393,6 +449,13 @@ export default function Calculator() {
                   </>
                 )}
 
+                {notes.trim() && (
+                  <div className="ticket-row ticket-notes">
+                    <span>Observaciones</span>
+                    <span>{notes.trim()}</span>
+                  </div>
+                )}
+
                 <div className="price-box">
                   <div className="label">{isServices ? "Precio desde" : "Precio estimado"}</div>
                   {price > 0 ? (
@@ -423,6 +486,13 @@ export default function Calculator() {
                     data-testid="ticket-call-btn"
                   >
                     <Phone size={18} /> Llamar ahora
+                  </a>
+                  <a
+                    href={mailHref}
+                    className="btn btn-ghost"
+                    data-testid="ticket-email-btn"
+                  >
+                    <Mail size={18} /> Enviar por email
                   </a>
                 </div>
               </div>
